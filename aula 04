@@ -1,0 +1,24 @@
+import requests
+import pandas as pd
+
+def fetch_json_to_dataframe(url):
+    try:
+        response = requests.get(url)
+        print("Status Code:", response.status_code)
+        
+        if response.status_code == 200:
+            data = response.json()  # Desserializa JSON
+            
+            # Verifica se 'value' está presente no JSON
+            if "value" in data:
+                df = pd.json_normalize(data["value"])
+            else:
+                df = pd.json_normalize(data)
+            
+            return df
+        else:
+            print("Erro na requisição:", response.text)
+            return pd.DataFrame()  # Retorna DataFrame vazio
+    except Exception as e:
+        print("Erro durante a requisição:", str(e))
+        return pd.DataFrame()  # Em caso de erro, retorna DataFrame vazio
